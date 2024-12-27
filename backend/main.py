@@ -7,6 +7,7 @@ from autogen_core.base import MessageContext, TopicId
 import asyncio
 import uuid
 from typing import Dict
+import os
 
 @asynccontextmanager
 async def init(app: FastAPI):
@@ -62,6 +63,14 @@ class ConnectionManager:
                 except Exception as e:
                     await websocket.send_text(f"Input is not in the expected format.. please try again.")
                     print(str(e))
+                    return 
+                # Check if the file is valid and exists on local file system
+                print(f"Image path {message.imagePath}")
+                if not os.path.exists(message.imagePath):
+                    await websocket.send_text(f"File {message.imagePath} doesn't exists, please enter correct and try again.")
+                    return
+                print('Process the file...')
+                await websocket.send_text(f"Processing the message now for session {session_id}.")
                 # publish the message
                 await agent_runtime.publish_message(
                     message, 

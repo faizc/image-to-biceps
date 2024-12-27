@@ -189,7 +189,7 @@ class IACRouterAgent(RoutedAgent):
         return Result(biceps=finalBiceps, error="")
 
     async def __scan_image_to_list_azure_resources(self, message) -> Result:
-        with open("C:\\tmp\\rg-agentic-to-iac.png", "rb") as image_file:
+        with open(message.imagePath, "rb") as image_file:
             encoded_string = base64.b64encode(image_file.read())
         imageUri = f"data:image/jpeg;base64,{encoded_string.decode("utf-8")}"
 

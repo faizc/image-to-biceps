@@ -56,6 +56,8 @@ class ClientServerAgent(RoutedAgent):
             websocket = self.connection_manager.connections.get(session_id)
             if websocket:
                 await websocket.send_text(message.biceps)
+                await websocket.send_text(f"Finished processing the message for session {session_id}.")
+
         except Exception as e:
             print(f"Failed to send message to session {session_id}: {str(e)}")
 
