@@ -5,7 +5,7 @@ AZURE_CLIENT_SECRET=
 AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4o
 #response_format value as json_schema is enabled only for api versions 2024-08-01-preview and later
 AZURE_OPENAI_API_VERSION=2024-08-01-preview
-AZURE_OPENAI_ENDPOINT=https://host.openai.azure.com/
+AZURE_OPENAI_ENDPOINT=https://aoai.openai.azure.com/
 AZURE_OPENAI_API_KEY=
 ASSISTANT_VECTOR_NAME=biceps-assistant-vector-store
 ASSISTANT_NAME=biceps-assistant

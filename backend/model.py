@@ -1,16 +1,23 @@
-from dataclasses import dataclass
 from pydantic import BaseModel
 from typing import List, Optional, Dict
+from dataclasses_json import dataclass_json
+from dataclasses import dataclass
 
+@dataclass_json
 @dataclass
 class APIModel:
     version: str
 
+@dataclass_json
 @dataclass
-class InitalPrompt:
-    prompt: str
+class Message:
     imagePath: str
     avd: bool = False
+
+@dataclass
+class Result:
+    biceps: str        
+    error: str
 
 @dataclass
 class AzureResource(BaseModel):

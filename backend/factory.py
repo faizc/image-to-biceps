@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import orjson
 from autogen_core.components import RoutedAgent, message_handler, type_subscription
-from .model import AzureResource, InitalPrompt
+from .model import AzureResource, Message
 from typing import List, Dict
 from autogen_core.base import AgentId, MessageContext
 
@@ -47,21 +47,4 @@ def getResourceType(azureResourceType="Default"):
     resources = {
 
     }
-    return resources[azureResourceType]() if azureResourceType in resources else DefaultResource()
-
-@type_subscription(topic_type="biceps-reviewer")
-class Review(RoutedAgent):
-    def __init__(self
-                ) -> None:
-        super().__init__("Review Biceps")
-
-    @message_handler
-    async def handle_message(
-        self, message: InitalPrompt, ctx: MessageContext
-    ) -> str:
-        print(f"Sender {ctx.sender.key} {ctx.sender.type} TopicId {ctx.topic_id}  key {self.id.key} ")
-        print(f'Critic {message}')
-        await self.send_message(InitalPrompt(prompt="Response from review agent"),
-                    AgentId(type=ctx.sender.type, key=self.id.key),
-                )
-        return message.prompt    
+    return resources[azureResourceType]() if azureResourceType in resources else DefaultResource()   

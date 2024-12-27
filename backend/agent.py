@@ -1,6 +1,6 @@
 from autogen_core.components import RoutedAgent, message_handler, type_subscription
 from autogen_ext.models import AzureOpenAIChatCompletionClient
-from .model import ResourceModel
+from .model import ResourceModel, Result
 from autogen_core.base import MessageContext
 from .factory import Resource, getResourceType
 from autogen_core.components.models import SystemMessage
@@ -36,4 +36,27 @@ class AzureResourceAgent(RoutedAgent):
         return response.content
         #Get the prompts specific to the resource type
         
+@type_subscription(topic_type="server-agent")
+class ClientServerAgent(RoutedAgent):
+    def __init__(self, 
+            connection_manager,
+            ) -> None:
+        super().__init__("ClientServerAgent")
+        self.connection_manager = connection_manager
+
+    @message_handler
+    async def handle_agent_response(
+        self,
+        message: Result,
+        ctx: MessageContext,
+    ) -> None:
+        print('handle_server_response')
+        session_id = ctx.topic_id.source
+        try:
+            websocket = self.connection_manager.connections.get(session_id)
+            if websocket:
+                await websocket.send_text(message.biceps)
+        except Exception as e:
+            print(f"Failed to send message to session {session_id}: {str(e)}")
+
 

@@ -19,8 +19,7 @@ async def initialize_agent_runtime() -> SingleThreadedAgentRuntime:
 
     print(f"Agent runtime initialized successfully.")
 
-    await IACRouterAgent.register(runtime, "IACRouterAgent", lambda: IACRouterAgent("IACRouterAgent", __aoai_chatCompletionClient))
+    await IACRouterAgent.register(runtime, "IACRouterAgent", lambda: IACRouterAgent("IACRouterAgent", __aoai_chatCompletionClient, runtime))
     await AzureResourceAgent.register(runtime, "azureresourceagent", lambda: AzureResourceAgent(__aoai_chatCompletionClient))
-
     return runtime
 

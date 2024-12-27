@@ -1,15 +1,16 @@
 import asyncio
 from autogen_core.components import RoutedAgent, message_handler, type_subscription
 from autogen_ext.models import AzureOpenAIChatCompletionClient
-from .model import InitalPrompt, AzureResourceList, ResourceModel, APIModel
+from .model import Message, AzureResourceList, ResourceModel, Result, APIModel
 from .config import Config
-from autogen_core.base import AgentId, MessageContext
+from autogen_core.base import AgentId, MessageContext, TopicId
 from autogen_core.components import Image as AGImage
 from autogen_core.components.models import UserMessage
 import json
 import time 
 from typing import List
 import base64
+from autogen_core.application import SingleThreadedAgentRuntime
 
 @type_subscription(topic_type="iac-router")
 class IACRouterAgent(RoutedAgent):
@@ -17,25 +18,29 @@ class IACRouterAgent(RoutedAgent):
         self,
         name: str,
         model_client: AzureOpenAIChatCompletionClient,
-#        agent_registry: AgentRegistry,
+        agent_registry: SingleThreadedAgentRuntime,
     ) -> None:
         print(f"\n IACRouterAgent Constructor \n")
         super().__init__("IAC Router")
         self._name = name
         self._model_client = model_client
-#        self._registry = agent_registry
+        self._registry = agent_registry
 
     @message_handler
-    async def messageme(self, message: APIModel, ctx: MessageContext) -> str:
-        print(f"API Model version is : {message.version}\n\n")
-        return message.version
+    async def route_api_message(self, message: APIModel, ctx: MessageContext) -> None:
+        print(f"Prompt in route message: {message} session-id {ctx.topic_id.source} topic {ctx.topic_id.type} \n\n")
 
     @message_handler
-    async def route_message(self, message: InitalPrompt, ctx: MessageContext) -> None:
-        print(f"Prompt in route message: {message.prompt}\n\n")
-        await self.__scan_image_to_list_azure_resources(message)
+    async def route_message(self, message: Message, ctx: MessageContext) -> None:
+        print(f"Prompt in route message: {message}\n\n")
+        result = await self.__scan_image_to_list_azure_resources(message)
+        # publish the message
+        await self._registry.publish_message(
+            result, 
+            topic_id=TopicId(type="server-agent", source=ctx.topic_id.source)
+        )
 
-    async def __process_avd(self, azureResource: AzureResourceList) -> None:
+    async def __process_avd(self, azureResource: AzureResourceList) -> Result:
         print('__process_avd')
 
         instruction=f"""
@@ -135,8 +140,11 @@ class IACRouterAgent(RoutedAgent):
             print(val)
             print('\n--------------------------------\n\n-----------------------------\n\n')
 
+        finalBiceps = ''.join(str(x.replace('```bicep','').replace('```','')) for x in diction.values())
+        return Result(biceps=finalBiceps, error="")
 
-    async def __process_non_avd(self, azureResource: AzureResourceList) -> None:
+
+    async def __process_non_avd(self, azureResource: AzureResourceList) -> Result:
         print('__process_non_avd')
         diction = {}
         for idx, x in enumerate(azureResource.azureresources):
@@ -148,6 +156,7 @@ class IACRouterAgent(RoutedAgent):
         #
         resources = list()
         dependentResources = list()
+        
         #
         for task in azureResource.azureresources:
             if(len(task.azureResourceDependencies)==0):
@@ -155,6 +164,7 @@ class IACRouterAgent(RoutedAgent):
             else:
                 dependentResources.insert(0, task)
         #
+        
         if(len(dependentResources) != 0):
             resources.append(dependentResources)
 
@@ -165,6 +175,7 @@ class IACRouterAgent(RoutedAgent):
             )
             for task in resources
         ]
+        
         finalBiceps:str = None
         try:
             group_results: List[str] = await asyncio.gather(*tasks)
@@ -177,10 +188,11 @@ class IACRouterAgent(RoutedAgent):
             print(finalBiceps)
         except Exception as e:
             print(f"Error sending messages to agents: {e}")
-            return
+            return Result(biceps=None, error=str(e))
+        
+        return Result(biceps=finalBiceps, error="")
 
-
-    async def __scan_image_to_list_azure_resources(self, message) -> None:
+    async def __scan_image_to_list_azure_resources(self, message) -> Result:
         with open("C:\\tmp\\rg-agentic-to-iac.png", "rb") as image_file:
             encoded_string = base64.b64encode(image_file.read())
         imageUri = f"data:image/jpeg;base64,{encoded_string.decode("utf-8")}"
@@ -197,11 +209,11 @@ class IACRouterAgent(RoutedAgent):
 
         user_message = UserMessage(content=[init_prompt,AGImage.from_uri(imageUri)], source="tool")
         messages = [user_message]
-        
         try:
             #response = await analyze_network_diagram_assistant.client.create(
             response = await self._model_client.create(
-                messages, json_output=True,
+                messages, 
+                json_output=True,
                 #[SystemMessage(message)], json_output=True,
                 #[UserMessage(content=system_message, source="user")], json_output=True
                 extra_create_args={"response_format": AzureResourceList},
@@ -216,11 +228,14 @@ class IACRouterAgent(RoutedAgent):
             for idx, x in enumerate(azureResource.azureresources):
                 print(idx, x)
 
+            result = None
             if message.avd == True:
-                await self.__process_avd(azureResource)
+                result = await self.__process_avd(azureResource)
             else:
-                await self.__process_non_avd(azureResource)
+                result = await self.__process_non_avd(azureResource)
             
+            return result
 
         except Exception as e:
             print(f"Failed to parse activities response: {str(e)}")
+            return Result(biceps=None, error=str(e))
