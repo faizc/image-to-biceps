@@ -33,23 +33,9 @@ async def async_add(a, b):
     print("Result From async_add", a + b)
     return a + b
 
-#@app.get("/process")
+@app.get("/")
 async def root():
-    
-    print(type(agent_runtime))
-    if agent_runtime is not None:
-        print("agent_runtime is not None")
-
-    results = await agent_runtime.publish_message(
-        #APIModel(version="1.1"), 
-        Message(prompt="system_message", imagePath=""), 
-        topic_id=TopicId(type="iac-router", source="iac-router")
-    )
-    print(f"result is {results}")
-    # not invoking the async method.. need to check 
-    #results= await async_add(12,43)
-    #print(f"Get output is {results}")
-    return results
+    return "Use the websockets /imagetobiceps"
 
 
 class ConnectionManager:
