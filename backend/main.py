@@ -1,7 +1,7 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from contextlib import asynccontextmanager
 from .util import initialize_agent_runtime
-from .model import InitalPrompt
+from .model import InitalPrompt, APIModel
 from autogen_core.base import MessageContext, TopicId
 import asyncio
 
@@ -12,9 +12,11 @@ async def init(app: FastAPI):
     global agent_runtime
     # Initialize the agent runtime
     agent_runtime = await initialize_agent_runtime()
+    print('initialize the agent runtime.')
     #
     await agent_runtime.publish_message(
-        InitalPrompt(prompt="system_message", imagePath=""), 
+#        InitalPrompt(prompt="system_message", imagePath="", avd=True), 
+        APIModel(version="1.1"), 
         topic_id=TopicId(type="iac-router", source="iac-router")
     )
     # 
@@ -42,15 +44,16 @@ async def root():
     if agent_runtime is not None:
         print("agent_runtime is not None")
 
-    #results = await agent_runtime.publish_message(
-    #    InitalPrompt(prompt="system_message", imagePath=""), 
-    #    topic_id=TopicId(type="iac-router", source="iac-router")
-    #)
+    await agent_runtime.publish_message(
+        APIModel(version="1.1"), 
+        #InitalPrompt(prompt="system_message", imagePath=""), 
+        topic_id=TopicId(type="iac-router", source="iac-router")
+    )
 
     # not invoking the async method.. need to check 
-    results=async_add(12,43)
-    print(f"Get output is {results}")
-    return "results"
+    results= await async_add(12,43)
+    #print(f"Get output is {results}")
+    return results
 
 
 class ConnectionManager:

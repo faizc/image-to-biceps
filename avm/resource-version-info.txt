@@ -1,0 +1,8 @@
+publicIpAddress=2023-09-01
+storageAccount=2023-04-01
+privatednszone=2024-06-01
+networkinterface=2023-04-01
+networksecuritygroup=2023-11-01
+virtualnetwork=2024-01-01
+bastion=2024-01-01
+privateendpoint=2023-11-01

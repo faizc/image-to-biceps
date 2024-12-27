@@ -1,0 +1,31 @@
+module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
+  name: 'bastionHostDeployment'
+  params: {
+    // Required parameters
+    name: 'nbhwaf001'
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
+    // Non-required parameters
+    bastionSubnetPublicIpResourceId: '<bastionSubnetPublicIpResourceId>'
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    disableCopyPaste: true
+    enableFileCopy: false
+    enableIpConnect: false
+    enableShareableLink: false
+    location: '<location>'
+    scaleUnits: 4
+    skuName: 'Standard'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}

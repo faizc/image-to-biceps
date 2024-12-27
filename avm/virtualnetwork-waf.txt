@@ -1,0 +1,81 @@
+module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
+  name: 'virtualNetworkDeployment'
+  params: {
+    // Required parameters
+    addressPrefixes: [
+      '<addressPrefix>'
+    ]
+    name: 'nvnwaf001'
+    // Non-required parameters
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    dnsServers: [
+      '10.0.1.4'
+      '10.0.1.5'
+    ]
+    flowTimeoutInMinutes: 20
+    location: '<location>'
+    subnets: [
+      {
+        addressPrefix: '<addressPrefix>'
+        name: 'GatewaySubnet'
+      }
+      {
+        addressPrefix: '<addressPrefix>'
+        name: 'az-subnet-x-001'
+        networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Reader'
+          }
+        ]
+        routeTableResourceId: '<routeTableResourceId>'
+        serviceEndpoints: [
+          'Microsoft.Sql'
+          'Microsoft.Storage'
+        ]
+      }
+      {
+        addressPrefix: '<addressPrefix>'
+        delegation: 'Microsoft.Netapp/volumes'
+        name: 'az-subnet-x-002'
+        networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
+      }
+      {
+        addressPrefix: '<addressPrefix>'
+        name: 'az-subnet-x-003'
+        networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
+        privateEndpointNetworkPolicies: 'Disabled'
+        privateLinkServiceNetworkPolicies: 'Enabled'
+      }
+      {
+        addressPrefix: '<addressPrefix>'
+        name: 'AzureBastionSubnet'
+        networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
+      }
+      {
+        addressPrefix: '<addressPrefix>'
+        name: 'AzureFirewallSubnet'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}

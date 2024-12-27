@@ -1,0 +1,51 @@
+module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = {
+  name: 'privateEndpointDeployment'
+  params: {
+    // Required parameters
+    name: 'npewaf001'
+    subnetResourceId: '<subnetResourceId>'
+    // Non-required parameters
+    applicationSecurityGroupResourceIds: [
+      '<applicationSecurityGroupResourceId>'
+    ]
+    customNetworkInterfaceName: 'npewaf001nic'
+    ipConfigurations: [
+      {
+        name: 'myIPconfig'
+        properties: {
+          groupId: 'vault'
+          memberName: 'default'
+          privateIPAddress: '10.0.0.10'
+        }
+      }
+    ]
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    privateLinkServiceConnections: [
+      {
+        name: 'npewaf001'
+        properties: {
+          groupIds: [
+            'vault'
+          ]
+          privateLinkServiceId: '<privateLinkServiceId>'
+        }
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}

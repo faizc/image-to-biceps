@@ -3,9 +3,14 @@ from pydantic import BaseModel
 from typing import List, Optional, Dict
 
 @dataclass
+class APIModel:
+    version: str
+
+@dataclass
 class InitalPrompt:
     prompt: str
     imagePath: str
+    avd: bool = False
 
 @dataclass
 class AzureResource(BaseModel):

@@ -1,0 +1,18 @@
+module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
+  name: 'privateDnsZoneDeployment'
+  params: {
+    // Required parameters
+    name: 'npdzwaf001.com'
+    // Non-required parameters
+    location: 'global'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}

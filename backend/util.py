@@ -2,6 +2,7 @@ from .config import Config
 from .agent import AzureResourceAgent
 from .router import IACRouterAgent
 from autogen_core.application import SingleThreadedAgentRuntime
+from openai import AzureOpenAI
 
 model_capabilities = {
     "vision": True,
@@ -22,3 +23,4 @@ async def initialize_agent_runtime() -> SingleThreadedAgentRuntime:
     await AzureResourceAgent.register(runtime, "azureresourceagent", lambda: AzureResourceAgent(__aoai_chatCompletionClient))
 
     return runtime
+

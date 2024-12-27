@@ -1,0 +1,32 @@
+module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<version>' = {
+  name: 'networkSecurityGroupDeployment'
+  params: {
+    // Required parameters
+    name: 'nnsgwaf001'
+    // Non-required parameters
+    location: '<location>'
+    securityRules: [
+      {
+        name: 'deny-hop-outbound'
+        properties: {
+          access: 'Deny'
+          destinationAddressPrefix: '*'
+          destinationPortRanges: [
+            '22'
+            '3389'
+          ]
+          direction: 'Outbound'
+          priority: 200
+          protocol: 'Tcp'
+          sourceAddressPrefix: 'VirtualNetwork'
+          sourcePortRange: '*'
+        }
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
