@@ -5,11 +5,6 @@ from dataclasses import dataclass
 
 @dataclass_json
 @dataclass
-class APIModel:
-    version: str
-
-@dataclass_json
-@dataclass
 class Message:
     imagePath: str
     avd: bool = False

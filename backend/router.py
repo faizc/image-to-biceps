@@ -1,7 +1,7 @@
 import asyncio
 from autogen_core.components import RoutedAgent, message_handler, type_subscription
 from autogen_ext.models import AzureOpenAIChatCompletionClient
-from .model import Message, AzureResourceList, ResourceModel, Result, APIModel
+from .model import Message, AzureResourceList, ResourceModel, Result
 from .config import Config
 from autogen_core.base import AgentId, MessageContext, TopicId
 from autogen_core.components import Image as AGImage
@@ -25,10 +25,6 @@ class IACRouterAgent(RoutedAgent):
         self._name = name
         self._model_client = model_client
         self._registry = agent_registry
-
-    @message_handler
-    async def route_api_message(self, message: APIModel, ctx: MessageContext) -> None:
-        print(f"Prompt in route message: {message} session-id {ctx.topic_id.source} topic {ctx.topic_id.type} \n\n")
 
     @message_handler
     async def route_message(self, message: Message, ctx: MessageContext) -> None:

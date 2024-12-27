@@ -1,7 +1,7 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from contextlib import asynccontextmanager
 from .util import initialize_agent_runtime
-from .model import Message, APIModel
+from .model import Message
 from .agent import ClientServerAgent
 from autogen_core.base import MessageContext, TopicId
 import asyncio
@@ -25,13 +25,6 @@ async def init(app: FastAPI):
     agent_runtime = None
 
 app = FastAPI(lifespan=init)
-
-# temporary async method to test the invocation from /process
-async def async_add(a, b):
-    print("Starting async_add")
-    await asyncio.sleep(5)  # Simulate an async operation
-    print("Result From async_add", a + b)
-    return a + b
 
 @app.get("/")
 async def root():
