@@ -4,14 +4,14 @@ Leverage the multi-modal capabilities of the Azure OpenAI GPT models to analyze 
 
 ## Features
 1. Extract the Azure resource information and the dependency relationsip between the resource from the images. Follow the guidance for the image (size, resolution etc.) [here](https://learn.microsoft.com/en-us/azure/ai-services/openai/overview#image-tokens)
-2. Biceps are created based on the Azure resource specific information extract from the images. You have option to generate the biceps as per the standard [Azure Verified Module](https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/storage/storage-account#example-11-waf-aligned) or bare minimum biceps file. 
-
-## Why Autogen 0.4 is used
+2. Biceps are created based on the Azure resource specific information extract from the images. You have option to generate the biceps as per the standard [Azure Verified Module](https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/storage/storage-account#example-11-waf-aligned) or generate bare minimum biceps file. 
 
 ## Message Flow
-1. **h** -  
-2.
-3.
+1. **App Init** - The "main.py" is the main class where the websockets, factory classes, routers, agents are subscribed and initialized.   
+2. **User Input** - On receipt of the message, data is validated and the iac-router subscriber is invoked 
+3. **Image Processing** - Image is processed by the router and based on the AVM flag (true/false), the respective agents are invoked.
+    * **AVM=TRUE** - Router invokes the assistant-agent which generates the AVM standard files, collates the data for all the resources and reverts back to the router. 
+    * **AVM=FALSE** - Router invokes the N number of agents based on the dependencies between the azure resources. Collates the response from all the agents and send back to the router.  
 
 ## Usage
 
