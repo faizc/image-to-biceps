@@ -45,7 +45,7 @@ ASSISTANT_AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4o
 
 __For OpenAI Key based authentication__
 ```ini
-AZURE_OPENAI_API_KEY=your-openai-api-key
+AZURE_OPENAI_API_KEY=azure-openai-api-key
 ```
 
 __For OpenAI service principal based authentication__
@@ -87,3 +87,8 @@ __NOTE__ - If the input is not send in this format then the request would fail w
 Click on the **Send** button
 
 ![alt text](./images/websocket-2.png "Biceps file")
+
+#### TODO/Limitations:
+1. Implement the logging framework by replacing print statements
+2. Currently we have the logic to split the azure resource based on dependencies which has been done so that LLM doesn't generate unwated biceps configuration. This can be optimized further based on the token usage/content lenght etc. 
+3. The LLM response for the images exported through the resource visualizer on Azure Portal are far better than architecture diagrams. Problem is that architecture diagram may not depict the dependencies problem and may also contain some unwated information like users, operational services, custom icons etc.   

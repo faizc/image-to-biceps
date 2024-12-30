@@ -7,3 +7,4 @@ azure-identity
 orjson
 configparser
 dataclasses-json
+openai
