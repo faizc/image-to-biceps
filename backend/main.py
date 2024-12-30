@@ -29,7 +29,7 @@ app = FastAPI(lifespan=init)
 
 @app.get("/")
 async def root():
-    return "Use the websockets /imagetobiceps"
+    return "Use the websockets URL /imagetobiceps"
 
 
 class ConnectionManager:
