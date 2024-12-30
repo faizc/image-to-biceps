@@ -13,6 +13,8 @@ Leverage the multi-modal capabilities of the Azure OpenAI GPT models to analyze 
     * **AVM=TRUE** - Router invokes the assistant-agent which generates the AVM standard files, collates the data for all the resources and reverts back to the router. 
     * **AVM=FALSE** - Router invokes the N number of agents based on the dependencies between the azure resources. Collates the response from all the agents and send back to the router.  
 
+![alt text](./images/flow-diagram.png "Flow Diagram")
+
 ## Usage
 
 ### Clone the repository
