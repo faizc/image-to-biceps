@@ -82,8 +82,8 @@ The input should be in below JSON format
 ```
 __NOTE__ - If the input is not send in this format then the request would fail with some guided error message from the server and ensure that the image is the local path on your machine. 
 
-![alt text](images\websocket-1.png "Connected to the websocket")
+![alt text](./images/websocket-1.png "Connected to the websocket")
 
 Click on the **Send** button
 
-![alt text](images\websocket-2.png "Biceps file")
+![alt text](./images/websocket-2.png "Biceps file")
