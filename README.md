@@ -69,7 +69,7 @@ Connect to the WebSocket endpoint at `ws://127.0.0.1:8000/imagetobiceps` to star
 ##### Sample network/resource viewer image
 
 Resource Visualizer image for resource group which has Virtual Machine and Storage behind private endpoint and the connectivity of the VM is through bastion.   
-![alt text](images\rg-agentic-to-iac.png "Resource Viewer")
+![alt text](./images/rg-agentic-to-iac.png "Resource Viewer")
 
 ##### Test the websocket
 
