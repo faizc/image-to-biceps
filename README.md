@@ -66,6 +66,8 @@ uvicorn backend.main:app --host 127.0.0.1 --port 9999
 
 Connect to the WebSocket endpoint at `ws://127.0.0.1:8000/imagetobiceps` to start interacting with the chatbot.
 
+__NOTE__ - You will need to use Postman or Apidog like API testing tool for connecting to websocket
+
 #### Sample Test:
 
 ##### Sample network/resource viewer image
@@ -93,4 +95,4 @@ Click on the **Send** button
 #### TODO/Limitations:
 1. Implement the logging framework by replacing print statements
 2. Currently we have the logic to split the azure resource based on dependencies which has been done so that LLM doesn't generate unwated biceps configuration. This can be optimized further based on the token usage/content lenght etc. 
-3. The LLM response for the images exported through the resource visualizer on Azure Portal are far better than architecture diagrams. Problem is that architecture diagram may not depict the dependencies problem and may also contain some unwated information like users, operational services, custom icons etc.   
+3. The LLM response for the images exported through the resource visualizer on Azure Portal are far better than architecture diagrams. Problem is that architecture diagram may not depict the dependencies properly and may also contain some unwated information like users, operational services, custom icons etc.   
