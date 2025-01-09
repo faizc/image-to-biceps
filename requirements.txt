@@ -1,6 +1,5 @@
 fastapi
 uvicorn[standard]
-yum
 autogen-core==0.4.0dev2
 autogen-ext==0.4.0dev2
 azure-identity

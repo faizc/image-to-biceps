@@ -8,15 +8,6 @@ from openai import AzureOpenAI
 config = configparser.ConfigParser()
 config.read('backend\config.txt')
 
-#def GetRequiredConfig(name):
-#    return os.environ[name]
-
-#def GetOptionalConfig(name, default=""):
-    
-    #if name in os.environ:
-    #    return os.environ[name]
-#    return default
-
 def GetConfig(name):
     return config.get('azure-services-info', name)
 

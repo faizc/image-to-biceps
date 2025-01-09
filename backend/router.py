@@ -36,18 +36,19 @@ class IACRouterAgent(RoutedAgent):
             topic_id=TopicId(type="server-agent", source=ctx.topic_id.source)
         )
 
-    async def __process_avd(self, azureResource: AzureResourceList) -> Result:
-        print('__process_avd')
+    async def __process_avm(self, azureResource: AzureResourceList) -> Result:
+        print('__process_avm')
 
         instruction=f"""
             You are a helpful AI assistant who will be generating biceps file based on the following instruction. 
                 1. Use the Azure resource specific biceps module as base bicep and update the 'params' section with the information provided by the users (i.e. name, location, dependencies etc.). 
                    If the relevant base Bicep file for the Azure resource type is not found in the provided files then create biceps file based on your knowledge and follow the same instructions.
                    Note - None of the attributes from the base bicep module should be omitted or missing in the final biceps file. 
-                2. Parameterize the values in the biceps on top of the biceps file. 
+                2. Parameterize the values in the biceps on top of the biceps file and variable name should be suffixed with the azure resource type 
                     for e.g. 
                     @description('VM Disk Name')
-                    param diskName string = 'vm-cindia-fc-disk1-bf2a815'
+                    param diskName_disk string = 'vm-cindia-fc-disk1-bf2a815'
+                    param location_publicIpAddress = 'some-location'
                 3. Base biceps file has values within <> braces which needs to be parameterized on top of the biceps configuration. Only the values need to be parameterized and not the complete parent section.
                     for e.g. configuration in the base biceps file
                         location: '<location>' 
@@ -140,7 +141,7 @@ class IACRouterAgent(RoutedAgent):
         return Result(biceps=finalBiceps, error="")
 
 
-    async def __process_non_avd(self, azureResource: AzureResourceList) -> Result:
+    async def __process_non_avm(self, azureResource: AzureResourceList) -> Result:
         print('__process_non_avd')
         diction = {}
         for idx, x in enumerate(azureResource.azureresources):
@@ -199,12 +200,16 @@ class IACRouterAgent(RoutedAgent):
          '', 
          'azureResourceType:"The Azure resource type, this should be in lower case and without any space and use standard azure vocabulary"', 
          'azureResourceName:"The Azure resource name, this can be blank if the name is not available",', 
-         'azureResourceDependencies:"This can be list of the dependent azure resource"'
+         'bicepsSymbolicName:"The Azure resource name, add symbolic as suffix. The values would be lower case and no special characters",', 
+         'azureResourceDependencies:"This can be list of the dependent azure resource. All the elements would be suffixed with symbolic. The values would be lower case and no special characters. No action is needed if azureResourceDependencies array is blank.",',
+         '',
+#         'NOTE - For the bicepSymbolicName and azureResourceDependencies, iterate over the elements and add the text symbolic to each text. The values would be lower case and no special characters',
         ]
         init_prompt = '\n'.join(init_prompt_lines)
-
+        #print(init_prompt)
         user_message = UserMessage(content=[init_prompt,AGImage.from_uri(imageUri)], source="tool")
         messages = [user_message]
+        #print(messages)
         try:
             #response = await analyze_network_diagram_assistant.client.create(
             response = await self._model_client.create(
@@ -225,10 +230,10 @@ class IACRouterAgent(RoutedAgent):
                 print(idx, x)
 
             result = None
-            if message.avd == True:
-                result = await self.__process_avd(azureResource)
+            if message.avm == True:
+                result = await self.__process_avm(azureResource)
             else:
-                result = await self.__process_non_avd(azureResource)
+                result = await self.__process_non_avm(azureResource)
             
             return result
 
